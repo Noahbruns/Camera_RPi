@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		4FA16A6B1867802C00390BFB /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4FA16A6A1867802C00390BFB /* main.cpp */; };
 		4FA16A6D1867802C00390BFB /* Camera_RPi.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4FA16A6C1867802C00390BFB /* Camera_RPi.1 */; };
+		4FA16A76186780BD00390BFB /* socket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4FA16A74186780BD00390BFB /* socket.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +29,8 @@
 		4FA16A671867802C00390BFB /* Camera_RPi */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Camera_RPi; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FA16A6A1867802C00390BFB /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		4FA16A6C1867802C00390BFB /* Camera_RPi.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Camera_RPi.1; sourceTree = "<group>"; };
+		4FA16A74186780BD00390BFB /* socket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = socket.cpp; sourceTree = "<group>"; };
+		4FA16A75186780BD00390BFB /* socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = socket.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +64,8 @@
 			isa = PBXGroup;
 			children = (
 				4FA16A6A1867802C00390BFB /* main.cpp */,
+				4FA16A74186780BD00390BFB /* socket.cpp */,
+				4FA16A75186780BD00390BFB /* socket.h */,
 				4FA16A6C1867802C00390BFB /* Camera_RPi.1 */,
 			);
 			path = Camera_RPi;
@@ -117,6 +122,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4FA16A76186780BD00390BFB /* socket.cpp in Sources */,
 				4FA16A6B1867802C00390BFB /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -195,6 +201,7 @@
 		4FA16A711867802C00390BFB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_VERSION = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -202,6 +209,7 @@
 		4FA16A721867802C00390BFB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_VERSION = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
