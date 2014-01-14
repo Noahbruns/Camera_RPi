@@ -201,6 +201,7 @@
 		4FA16A711867802C00390BFB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				GCC_VERSION = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -209,6 +210,7 @@
 		4FA16A721867802C00390BFB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				GCC_VERSION = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

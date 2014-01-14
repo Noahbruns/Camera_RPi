@@ -15,7 +15,7 @@ stringstream x;
 string s;
 
 int main(void){
-    sleep(26);
+    sleep(23);
     system("xbmc-send -a \"PlayMedia(storage/videos/live1.strm)\"");
     Socket sock1;
     sock1.create();
@@ -24,11 +24,8 @@ int main(void){
     while (run) {
         Socket sock2;
         sock1.accept(sock2);
-        x.str("");
         sock2.recv(s);
-        x<<s;
-        url="";
-        getline(x,url);
+        url=s.substr(0,s.find('\n'));
         if(url.substr(0,3)=="GET"){
             response="Success";
             url=url.substr(4,url.find(' ',4)-4);
