@@ -21,6 +21,16 @@ using namespace std;
 const int MAXCONNECTIONS = 5;
 const int MAXRECV = 1024;
 
+class SockExcept {
+private:
+    string except;
+    
+public:
+    SockExcept(string s):except(s){};
+    ~SockExcept(){};
+    string get_SockExcept() {return except;}
+};
+
 class Socket {
 private:
     int m_sock;

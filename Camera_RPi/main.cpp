@@ -14,9 +14,51 @@ bool run=true;
 stringstream x;
 string s;
 
+bool check_camera(){
+    bool host_is;
+    int status;
+	struct addrinfo hints;
+	struct addrinfo *serv;
+	int sock;
+	char *proto;
+	char *host;
+    
+	host = "192.168.1.100";
+	proto = "80";
+    
+	memset(&hints, 0, sizeof hints);
+	hints.ai_family = AF_UNSPEC;		//don't care IPV4 or IPV6
+	hints.ai_socktype = SOCK_STREAM;	//TCP
+	hints.ai_flags = AI_PASSIVE;		//fill in my IP for me
+    
+	if((status = getaddrinfo(host, proto, &hints, &serv)) != 0) {
+		fprintf(stderr, "getaddrinfo error:%s\n",gai_strerror(status));
+		return -1;
+	}
+    
+	sock = socket(serv->ai_family, serv->ai_socktype, serv->ai_protocol);
+    
+	if (sock == -1) {
+		perror("socket");
+		return -1;
+	}
+    
+	if (connect(sock, serv->ai_addr, serv->ai_addrlen) == -1) {
+		host_is=false;
+	}
+	else {
+		host_is=true;
+	}
+	close(sock);
+	freeaddrinfo(serv);
+	return host_is;
+}
+
 int main(void){
-    sleep(23);
-    system("xbmc-send -a \"PlayMedia(storage/videos/live1.strm)\"");
+    //sleep(23);
+    if(check_camera()){
+        system("xbmc-send -a \"PlayMedia(storage/videos/live1.strm)\"");
+    }
     Socket sock1;
     sock1.create();
     sock1.bind(5000);

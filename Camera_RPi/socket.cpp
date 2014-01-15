@@ -18,13 +18,14 @@ Socket::Socket():m_sock(0) {}
 Socket::~Socket() {
     if (is_valid()) {
         ::close(m_sock);
+        throw SockExcept("Fehler");
     }
 }
 
 bool Socket::create() {
     m_sock = ::socket(AF_INET, SOCK_STREAM, 0);
     if (m_sock<0) {
-        cout<<"Fehler beim erstellen des Sockets"<<endl;
+        throw SockExcept("Fehler");
         exit(1);
     }
     int y=1;
@@ -35,7 +36,7 @@ bool Socket::create() {
 bool Socket::UDP_create() {
     m_sock=::socket(AF_INET, SOCK_DGRAM, 0);
     if (m_sock<0) {
-        cout<<"Fehler beim erstellen des Sockets"<<endl;
+        throw SockExcept("Fehler");
         exit(1);
     }
     return true;
@@ -93,7 +94,7 @@ bool Socket::connect(const string host, const int port) {
     else {
         host_info= gethostbyname(host.c_str());
         if (NULL == host_info) {
-            cout<<"Unbekannter Server"<<endl;
+            throw SockExcept("Unbekannter Server");
             exit(1);
         }
         memcpy((char *) &m_addr.sin_addr, host_info->h_addr, host_info->h_length);
