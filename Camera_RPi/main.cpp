@@ -1,8 +1,7 @@
 #include "socket.h"
-#include <string>
+#include <string.h>
 #include <iostream>
 #include <stdlib.h>
-#include <sstream>
 
 string response;
 string url;
@@ -11,7 +10,6 @@ string arg;
 bool state=true;
 bool run=true;
 
-stringstream x;
 string s;
 
 bool check_camera(){
@@ -32,14 +30,12 @@ bool check_camera(){
 	hints.ai_flags = AI_PASSIVE;		//fill in my IP for me
     
 	if((status = getaddrinfo(host, proto, &hints, &serv)) != 0) {
-		fprintf(stderr, "getaddrinfo error:%s\n",gai_strerror(status));
 		return -1;
 	}
     
 	sock = socket(serv->ai_family, serv->ai_socktype, serv->ai_protocol);
     
 	if (sock == -1) {
-		perror("socket");
 		return -1;
 	}
     
