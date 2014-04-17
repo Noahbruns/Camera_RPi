@@ -21,7 +21,7 @@ using namespace std;
 const int MAXCONNECTIONS = 5;
 const int MAXRECV = 1024;
 
-class SockExcept {
+/*class SockExcept {
 private:
     string except;
     
@@ -29,7 +29,7 @@ public:
     SockExcept(string s):except(s){};
     ~SockExcept(){};
     string get_SockExcept() {return except;}
-};
+};*/
 
 class Socket {
 private:
@@ -46,7 +46,7 @@ public:
     bool accept(Socket&) const;
     bool connect(const string host, const int port);
     bool send (const string) const;
-    int recv(string&) const;
+    long recv(string&) const;
     bool UDP_send (const string, const string, const int port) const;
     int UDP_recv(string&) const;
     bool close() const;

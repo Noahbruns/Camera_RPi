@@ -18,25 +18,22 @@ Socket::Socket():m_sock(0) {}
 Socket::~Socket() {
     if (is_valid()) {
         ::close(m_sock);
-        throw SockExcept("Fehler");
     }
 }
 
 bool Socket::create() {
     m_sock = ::socket(AF_INET, SOCK_STREAM, 0);
     if (m_sock<0) {
-        throw SockExcept("Fehler");
         exit(1);
     }
     int y=1;
     setsockopt(m_sock, SOL_SOCKET, SO_REUSEADDR, &y, sizeof(int));
     return true;
+    
 }
-
 bool Socket::UDP_create() {
     m_sock=::socket(AF_INET, SOCK_DGRAM, 0);
     if (m_sock<0) {
-        throw SockExcept("Fehler");
         exit(1);
     }
     return true;
@@ -94,7 +91,6 @@ bool Socket::connect(const string host, const int port) {
     else {
         host_info= gethostbyname(host.c_str());
         if (NULL == host_info) {
-            throw SockExcept("Unbekannter Server");
             exit(1);
         }
         memcpy((char *) &m_addr.sin_addr, host_info->h_addr, host_info->h_length);
@@ -122,11 +118,11 @@ bool Socket::send(const string s) const{
     }
 }
 
-int Socket::recv(string& s) const{
+long Socket::recv(string& s) const{
     char buf[MAXRECV + 1];
     s="";
     memset(buf, 0, MAXRECV+1);
-    int status = ::recv(m_sock, buf, MAXRECV, 0);
+    long status = ::recv(m_sock, buf, MAXRECV, 0);
     if (status>0 || status!=-1){
         s=buf;
         return status;

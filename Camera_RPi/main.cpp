@@ -1,60 +1,79 @@
 #include "socket.h"
 #include <string.h>
-#include <iostream>
 #include <stdlib.h>
+#include <stdio.h>
+#include <limits>
+#include <iostream>
 
 string response;
 string url;
 string arg;
 
-bool state=true;
+bool state=false;
 bool run=true;
 
 string s;
 
-bool check_camera(){
-    bool host_is;
-    int status;
-	struct addrinfo hints;
-	struct addrinfo *serv;
-	int sock;
-	char *proto;
-	char *host;
+string Commanddo(string cmd) {
     
-	host = "192.168.1.100";
-	proto = "80";
+    string data;
+    FILE * stream;
+    const int max_buffer = 256;
+    char buffer[max_buffer];
+    cmd.append(" 2>&1");
     
-	memset(&hints, 0, sizeof hints);
-	hints.ai_family = AF_UNSPEC;		//don't care IPV4 or IPV6
-	hints.ai_socktype = SOCK_STREAM;	//TCP
-	hints.ai_flags = AI_PASSIVE;		//fill in my IP for me
-    
-	if((status = getaddrinfo(host, proto, &hints, &serv)) != 0) {
-		return -1;
-	}
-    
-	sock = socket(serv->ai_family, serv->ai_socktype, serv->ai_protocol);
-    
-	if (sock == -1) {
-		return -1;
-	}
-    
-	if (connect(sock, serv->ai_addr, serv->ai_addrlen) == -1) {
-		host_is=false;
-	}
-	else {
-		host_is=true;
-	}
-	close(sock);
-	freeaddrinfo(serv);
-	return host_is;
+    stream = popen(cmd.c_str(), "r");
+    if (stream) {
+        while (!feof(stream))
+            if (fgets(buffer, max_buffer, stream) != NULL) data.append(buffer);
+        pclose(stream);
+    }
+    return data;
 }
 
-int main(void){
-    //sleep(23);
-    if(check_camera()){
-        system("xbmc-send -a \"PlayMedia(storage/videos/live1.strm)\"");
+bool check(string src, char needle){
+    if(src.find(needle)!=std::numeric_limits<unsigned long>::max()){
+        //needle found
+        return 0;
     }
+    else {
+        return 1;
+    }
+}
+
+bool check_camera(){
+    string cmd=Commanddo("ping -c 1 -t 1 192.168.178.99");
+    unsigned long place = cmd.find(" packet loss");
+    
+    if(place == numeric_limits<unsigned long>::max()){
+        return false;
+    }
+    if (cmd.substr(place-4,4)=="100%") {
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
+string IR_cmd(string cmd){
+    string ret=Commanddo("irsend SEND_ONCE LG "+cmd);
+    return ret;
+}
+
+
+int main(int argc, char* argv[]){
+    if (argc==1) {
+        sleep(25);
+    }
+    
+    while (!check_camera()) {
+        sleep(5);
+    }
+    
+    Commanddo("xbmc-send -a \"PlayMedia(storage/videos/live1.strm)\"");
+    
+    state=true;
     Socket sock1;
     sock1.create();
     sock1.bind(5000);
@@ -66,39 +85,43 @@ int main(void){
         url=s.substr(0,s.find('\n'));
         if(url.substr(0,3)=="GET"){
             response="Success";
+            arg="";
             url=url.substr(4,url.find(' ',4)-4);
-            if(url.find('?')!=4294967295){
+            if(url.find('?')!=std::numeric_limits<unsigned long>::max()){
                 arg=url.substr(url.find('?')+1);
                 url=url.substr(0,url.find('?'));
             }
             
             if (url=="/on") {
-                if(system("xbmc-send -a \"PlayMedia(storage/videos/live1.strm)\"")!=0){
-                    response="fail";
-                }
+                Commanddo("xbmc-send -a \"PlayMedia(storage/videos/live1.strm)\"");
                 state=1;
+                sleep(10);
             }
-            else if (url=="/w?") {
+            else if (url=="/w") {
                 string video;
                 video="xbmc-send -a \"PlayMedia(";
                 video.append(s.substr(7,(s.find(' ',7)-7)));
                 video.append(")\"");
-                if(system(video.c_str())!=0){
-                    response="fail";
-                }
+                Commanddo(video.c_str());
                 state=1;
             }
-            else if (url=="/off") {
-                if(system("xbmc-send -a \"PlayerControl(Stop)\"")!=0){
-                    response="fail";
+            
+            else if (url=="/ir") {
+                if (!check(arg, '&') || !check(arg, '|')) {
+                    response="not allowed";
                 }
+                else {
+                    response=IR_cmd(arg);
+                }
+            }
+            
+            else if (url=="/off") {
+                Commanddo("xbmc-send -a \"PlayerControl(Stop)\"");
                 
                 state=0;
             }
             else if (url=="/shutdown") {
-                if(system("xbmc-send -a \"Shutdown\"")!=0){
-                    response="fail";
-                }
+                Commanddo("xbmc-send -a \"Shutdown\"");
                 state=0;
             }
             else if (url=="/exit") {
